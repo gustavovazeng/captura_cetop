@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>As 4 conquistas do primeiro ano · Aula gratuita com a Tia Jana</title>
 <meta name="description" content="Aula ao vivo e gratuita: faça o mapa das conquistas do seu bebê até o primeiro ano de idade.">
-<link rel="icon" href="/assets/cetop-logo.png">
+<link rel="icon" href="assets/cetop-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -72,7 +72,7 @@
 <form id="inscricao" novalidate onsubmit="event.preventDefault()" style="width:100%;display:flex;flex-direction:column;gap:12px;margin-top:8px;scroll-margin-top:24px">
   <input id="email" class="field" type="email" name="email" autocomplete="email" inputmode="email" placeholder="Seu melhor e-mail" aria-label="Seu melhor e-mail" required>
   <div style="display:flex;gap:8px;width:100%">
-    <select id="ddi" class="field" name="ddi" aria-label="Código do país"></select>
+    <select id="ddi" class="field" name="ddi" aria-label="Código do país"><option value="+55" selected>BR +55</option><option value="+351">PT +351</option><option value="+1">EUA/CA +1</option><option value="+34">ES +34</option><option value="+39">IT +39</option><option value="+44">UK +44</option><option value="+353">IE +353</option><option value="+33">FR +33</option><option value="+49">DE +49</option><option value="+41">CH +41</option><option value="+81">JP +81</option><option value="+61">AU +61</option><option value="+54">AR +54</option><option value="+595">PY +595</option><option value="+598">UY +598</option><option value="+56">CL +56</option></select>
     <input id="phone" class="field" type="tel" name="phone" autocomplete="tel-national" inputmode="tel" placeholder="Seu WhatsApp" aria-label="Seu WhatsApp com DDD" required style="flex:1;min-width:0">
   </div>
   <div class="hp" aria-hidden="true"><label>Website <input id="website" name="website" tabindex="-1" autocomplete="off"></label></div>
@@ -143,14 +143,98 @@
 </section>
 
 <footer style="max-width:960px;margin:0 auto;padding:28px 22px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;font-size:14px;color:#7A5A50">
-<img src="/assets/cetop-logo.png" alt="CETOP" style="height:44px;mix-blend-mode:multiply">
+<img src="assets/cetop-logo.png" alt="CETOP" style="height:44px;mix-blend-mode:multiply">
 <div>CETOP · Como Estimular TOdo Potencial das crianças</div>
 </footer>
 </div>
 
-<script type="module">
-import { COUNTRIES, normalizePhone, isValidEmail, onlyDigits, UTM_KEYS } from '/lib/validate.js';
-import { PLANILHA_URL } from '/config.js';
+<script>
+// ================== CONFIGURAÇÃO ==================
+// Link do App da Web da planilha (Apps Script)
+const PLANILHA_URL = 'https://script.google.com/macros/s/AKfycbwsbXGUFLC4mfdLQWFD5LRoz58gGf51H4s--m8-twqmQUZ5JUsguE7O36MCV4lQsiUe/exec';
+
+// ================== VALIDAÇÃO (e-mail e telefone) ==================
+
+const DDDS_BR = new Set([
+  11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 24, 27, 28, 31, 32, 33, 34, 35, 37, 38,
+  41, 42, 43, 44, 45, 46, 47, 48, 49, 51, 53, 54, 55, 61, 62, 63, 64, 65, 66, 67, 68, 69,
+  71, 73, 74, 75, 77, 79, 81, 82, 83, 84, 85, 86, 87, 88, 89, 91, 92, 93, 94, 95, 96, 97, 98, 99,
+]);
+
+// Número com todos os dígitos iguais depois do 9 (ex.: 99999-9999, 91111-1111)
+const repetido = (d) => /^(\d)\1+$/.test(d);
+
+// ddi -> { label, placeholder, max (dígitos), mask(d), valid(d) }
+const COUNTRIES = {
+  '+55': {
+    label: 'BR +55',
+    placeholder: '(11) 98765-4321',
+    max: 11,
+    mask(d) {
+      if (d.length <= 2) return d ? '(' + d : '';
+      if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+      return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+    },
+    // DDD válido + 9 dígitos começando com 9
+    valid: (d) =>
+      d.length === 11 && DDDS_BR.has(+d.slice(0, 2)) && d[2] === '9' && !repetido(d.slice(3)),
+  },
+  '+351': {
+    label: 'PT +351',
+    placeholder: '912 345 678',
+    max: 9,
+    mask: (d) => d.replace(/^(\d{3})(\d{1,3})?(\d{1,3})?$/, (_, a, b, c) => [a, b, c].filter(Boolean).join(' ')),
+    valid: (d) => /^9[1236]\d{7}$/.test(d) && !repetido(d.slice(1)),
+  },
+  '+1': {
+    label: 'EUA/CA +1',
+    placeholder: '(201) 555-0123',
+    max: 10,
+    mask(d) {
+      if (d.length <= 3) return d ? '(' + d : '';
+      if (d.length <= 6) return `(${d.slice(0, 3)}) ${d.slice(3)}`;
+      return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
+    },
+    valid: (d) => /^[2-9]\d{2}[2-9]\d{6}$/.test(d) && !repetido(d),
+  },
+  '+34': { label: 'ES +34', max: 9, valid: (d) => /^[67]\d{8}$/.test(d) },
+  '+39': { label: 'IT +39', max: 10, valid: (d) => /^3\d{8,9}$/.test(d) },
+  '+44': { label: 'UK +44', max: 10, valid: (d) => /^7\d{9}$/.test(d) },
+  '+353': { label: 'IE +353', max: 9, valid: (d) => /^8\d{8}$/.test(d) },
+  '+33': { label: 'FR +33', max: 9, valid: (d) => /^[67]\d{8}$/.test(d) },
+  '+49': { label: 'DE +49', max: 11, valid: (d) => /^1\d{9,10}$/.test(d) },
+  '+41': { label: 'CH +41', max: 9, valid: (d) => /^7\d{8}$/.test(d) },
+  '+81': { label: 'JP +81', max: 10, valid: (d) => /^[789]0\d{8}$/.test(d) },
+  '+61': { label: 'AU +61', max: 9, valid: (d) => /^4\d{8}$/.test(d) },
+  '+54': { label: 'AR +54', max: 11, valid: (d) => /^9?\d{10}$/.test(d) },
+  '+595': { label: 'PY +595', max: 9, valid: (d) => /^9\d{8}$/.test(d) },
+  '+598': { label: 'UY +598', max: 8, valid: (d) => /^9\d{7}$/.test(d) },
+  '+56': { label: 'CL +56', max: 9, valid: (d) => /^9\d{8}$/.test(d) },
+};
+
+for (const c of Object.values(COUNTRIES)) {
+  c.placeholder ??= 'Seu WhatsApp';
+  c.mask ??= (d) => d;
+}
+
+const onlyDigits = (v) => String(v ?? '').replace(/\D/g, '');
+
+// Retorna o telefone no formato internacional (+5511987654321) ou null se inválido.
+function normalizePhone(ddi, raw) {
+  const country = COUNTRIES[ddi];
+  if (!country) return null;
+  let d = onlyDigits(raw);
+  if (ddi === '+55' || ddi === '+351') d = d.replace(/^0+/, ''); // ex.: "011 9..." digitado com zero
+  return country.valid(d) ? ddi + d : null;
+}
+
+function isValidEmail(v) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v ?? '').trim());
+}
+
+const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+
+// ================== FORMULÁRIO ==================
 
 // Página para onde a pessoa vai depois de se cadastrar
 const NEXT_PAGE = '/pesquisa';
@@ -173,7 +257,6 @@ const utms = readUtms();
 const $ = (id) => document.getElementById(id);
 const form = $('inscricao'), email = $('email'), ddi = $('ddi'), phone = $('phone'), msg = $('msg'), btn = $('submit');
 
-ddi.innerHTML = Object.entries(COUNTRIES).map(([code, c]) => `<option value="${code}">${c.label}</option>`).join('');
 
 function formatPhone() {
   const c = COUNTRIES[ddi.value];
