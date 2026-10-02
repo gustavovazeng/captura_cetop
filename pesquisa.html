@@ -3,28 +3,203 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pesquisa · As 4 conquistas</title>
+<title>Falta apenas um passo · As 4 conquistas</title>
 <meta name="robots" content="noindex">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/cetop-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   body{margin:0;background:#FCF6F0;color:#4A2E26;font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
-  main{max-width:520px;margin:0 auto;padding:64px 22px;text-align:center}
-  h1{font-family:'DM Serif Display',serif;font-weight:400;font-size:clamp(32px,8vw,42px);line-height:1.08;margin:0 0 16px}
-  p{font-size:18px;line-height:1.5}
-  code{font-size:13px;color:#7A5A50;word-break:break-all}
+  .wrap{position:relative;overflow:hidden;min-height:100vh}
+  .blob{position:absolute;left:50%;top:-520px;transform:translateX(-50%);width:820px;height:820px;border-radius:50%;background:#FBE3D3}
+  main{position:relative;max-width:520px;margin:0 auto;padding:40px 22px 56px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px}
+
+  /* Logo "As 4 conquistas" (empilhado) */
+  .logo{display:inline-flex;flex-direction:column;align-items:center;gap:18px;zoom:.6}
+  .logo-steps{display:flex;align-items:flex-end;gap:6px;height:104px}
+  .logo-steps>div{width:24px;border-radius:12px 12px 4px 4px}
+  .logo-top{display:flex;flex-direction:column;align-items:center;gap:6px;width:auto!important;border-radius:0!important}
+  .logo-dot{width:20px;height:20px;border-radius:50%;background:#4A2E26}
+  .logo-title{font-family:'DM Serif Display',serif;font-size:64px;line-height:.95;white-space:nowrap}
+  .logo-sub{font-size:17px;font-weight:700;letter-spacing:.34em;text-transform:uppercase;white-space:nowrap;padding-left:4px;margin-top:8px}
+
+  h1{margin:6px 0 0;font-family:'DM Serif Display',serif;font-weight:400;font-size:clamp(32px,8.6vw,42px);line-height:1.06;text-wrap:balance}
+  h1 em{color:#C8703A}
+  .lead{margin:0;font-size:18px;line-height:1.5}
+
+  /* Cartão da pesquisa */
+  .card{width:100%;box-sizing:border-box;background:#FFF;border-radius:28px;padding:24px 20px;box-shadow:0 20px 50px rgba(74,46,38,.08);text-align:left;margin-top:6px}
+  .progress{height:8px;border-radius:999px;background:#F3E3D8;overflow:hidden}
+  .progress>div{height:100%;width:0;background:#D9783E;border-radius:999px;transition:width .3s}
+  .count{font-size:13px;font-weight:700;letter-spacing:.08em;color:#9C8178;margin:16px 0 6px}
+  .q{margin:0 0 16px;font-family:'DM Serif Display',serif;font-weight:400;font-size:26px;line-height:1.15}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{display:flex;align-items:center;gap:12px;border:2px solid #F3E3D8;border-radius:16px;padding:14px 16px;font-size:17px;cursor:pointer;transition:border-color .15s,background .15s;-webkit-tap-highlight-color:transparent}
+  .opt:hover{border-color:#E8C9B5}
+  .opt input{appearance:none;-webkit-appearance:none;width:22px;height:22px;margin:0;border:2px solid #D9B49E;border-radius:50%;flex-shrink:0;display:grid;place-content:center}
+  .opt input::before{content:"";width:10px;height:10px;border-radius:50%;background:#FCF6F0;transform:scale(0);transition:transform .12s}
+  .opt input:checked{border-color:#4A2E26;background:#4A2E26}
+  .opt input:checked::before{transform:scale(1)}
+  .opt:has(input:checked){border-color:#4A2E26;background:#FCF6F0}
+  .nav{display:flex;gap:10px;margin-top:20px}
+  .btn{font:inherit;font-size:18px;font-weight:700;border:none;border-radius:999px;padding:16px 20px;min-height:56px;cursor:pointer;flex:1}
+  .btn-main{background:#4A2E26;color:#FCF6F0}
+  .btn-main:hover{background:#6A4438}
+  .btn-main:disabled{opacity:.35;cursor:not-allowed}
+  .btn-back{background:transparent;color:#4A2E26;border:2px solid #E8D5C8;flex:0 0 auto;padding:16px 22px}
+  .btn-back[hidden]{display:none}
+  .msg{font-size:15px;color:#A4502A;margin-top:12px}
+
+  .after{font-size:15px;line-height:1.5;color:#7A5A50;margin:10px 0 0;max-width:380px}
+  .btn-wpp{display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;font-size:18px;font-weight:700;background:#F7C6A3;color:#4A2E26;border-radius:999px;padding:18px 26px;min-height:60px;box-sizing:border-box;width:100%;max-width:420px}
+  .btn-wpp:hover{background:#F2B08A;color:#4A2E26}
+  footer{max-width:960px;margin:0 auto;padding:24px 22px;display:flex;justify-content:center;align-items:center;gap:12px;font-size:14px;color:#7A5A50}
 </style>
 </head>
 <body>
+<div class="wrap">
+<div class="blob"></div>
 <main>
-  <h1>Página de pesquisa (provisória)</h1>
-  <p>O cadastro funcionou. Esta página será substituída pela pesquisa.</p>
-  <p><code id="debug"></code></p>
+  <div class="logo" role="img" aria-label="As 4 conquistas do primeiro ano">
+    <div class="logo-steps" aria-hidden="true">
+      <div style="height:24px;background:#F7C6A3"></div>
+      <div style="height:44px;background:#F2B08A"></div>
+      <div style="height:64px;background:#EE9A62"></div>
+      <div class="logo-top"><div class="logo-dot"></div><div style="width:24px;height:84px;border-radius:12px 12px 4px 4px;background:#D9783E"></div></div>
+    </div>
+    <div><div class="logo-title">As <span style="color:#D9783E">4</span> conquistas</div><div class="logo-sub">do primeiro ano</div></div>
+  </div>
+
+  <h1>Falta apenas <em>um passo</em> para garantir sua vaga!</h1>
+  <p class="lead">Para concluir sua inscrição, responda:</p>
+
+  <form class="card" id="pesquisa" onsubmit="event.preventDefault()" novalidate>
+    <div class="progress" aria-hidden="true"><div id="bar"></div></div>
+    <div class="count" id="count"></div>
+    <h2 class="q" id="q"></h2>
+    <div class="opts" id="opts" role="radiogroup" aria-labelledby="q"></div>
+    <div class="msg" id="msg" role="alert" hidden></div>
+    <div class="nav">
+      <button type="button" class="btn btn-back" id="back" hidden>Voltar</button>
+      <button type="button" class="btn btn-main" id="next" disabled>Próxima</button>
+    </div>
+  </form>
+
+  <p class="after">Ao terminar, você entra direto no grupo do WhatsApp. É lá que vamos enviar o link da aula.</p>
+  <a class="btn-wpp" id="grupo" href="#">Entrar no grupo do WhatsApp</a>
 </main>
+</div>
+<footer><img src="assets/cetop-logo.png" alt="CETOP" style="height:36px;mix-blend-mode:multiply"></footer>
+
 <script>
-  // A pesquisa vai receber pela URL: email, telefone (+5511987654321) e as UTMs.
-  // As respostas serão gravadas na aba "Base pesquisa" junto com e-mail e telefone.
-  const p = new URLSearchParams(location.search);
-  document.getElementById('debug').textContent = [p.get('email'), p.get('telefone')].filter(Boolean).join(' · ');
+// ================== CONFIGURAÇÃO ==================
+// Link do App da Web da planilha (o mesmo da página de captura)
+const PLANILHA_URL = 'https://script.google.com/macros/s/AKfycbwsbXGUFLC4mfdLQWFD5LRoz58gGf51H4s--m8-twqmQUZ5JUsguE7O36MCV4lQsiUe/exec';
+// O link do grupo do WhatsApp fica na planilha: aba "Config", célula B1.
+
+// Perguntas na ordem em que aparecem (o título vira o cabeçalho na aba "Base pesquisa")
+const PERGUNTAS = [
+  { titulo: 'Qual sua idade?', opcoes: ['Até 25 anos', '26 a 35 anos', '36 a 45 anos', '46 a 55 anos', 'Acima de 55 anos'] },
+  { titulo: 'Qual seu gênero?', opcoes: ['Masculino', 'Feminino'] },
+  { titulo: 'Qual sua ocupação atual?', opcoes: ['CLT', 'Autônoma', 'Empresária', 'Servidora pública', 'Aposentada', 'Estudante', 'Desempregada', 'Do lar', 'Outro'] },
+  { titulo: 'Qual sua renda?', opcoes: ['Até R$ 2.000', 'R$ 2.001 a R$ 4.000', 'R$ 4.001 a R$ 7.000', 'R$ 7.001 a R$ 12.000', 'R$ 12.001 a R$ 20.000', 'Acima de R$ 20.000'] },
+  { titulo: 'Qual seu nível de escolaridade?', opcoes: ['Ensino fundamental completo', 'Ensino médio completo', 'Graduação completa', 'Pós-graduação ou mestrado completo', 'Doutorado completo'] },
+  { titulo: 'Você é o que do bebê?', opcoes: ['Pai', 'Mãe', 'Vô/Vó', 'Tio/Tia', 'Cuidadora'] },
+  { titulo: 'Qual a idade do seu bebê?', opcoes: ['0 a 6 meses', '6 meses a 1 ano', '1 ano a 2 anos', '2 anos a 3 anos'] },
+];
+
+// ================== PÁGINA ==================
+const params = new URLSearchParams(location.search);
+const lead = { email: params.get('email') || '', telefone: params.get('telefone') || '' };
+const respostas = new Array(PERGUNTAS.length).fill(null);
+let atual = 0, enviando = false;
+
+const $ = (id) => document.getElementById(id);
+const bar = $('bar'), count = $('count'), q = $('q'), opts = $('opts'), back = $('back'), next = $('next'), msg = $('msg'), grupo = $('grupo');
+
+// ---------- Link do grupo (lido da planilha) ----------
+let linkGrupo = '';
+const carregarLink = fetch(PLANILHA_URL + '?config=1')
+  .then((r) => r.json())
+  .then((d) => {
+    if (d && /^https?:\/\//.test(d.grupo_whatsapp || '')) {
+      linkGrupo = d.grupo_whatsapp;
+      grupo.href = linkGrupo;
+    }
+  })
+  .catch(() => {});
+
+grupo.addEventListener('click', async (e) => {
+  if (linkGrupo) return; // link já carregado: segue normal
+  e.preventDefault();
+  await carregarLink;
+  if (linkGrupo) location.href = linkGrupo;
+});
+
+// ---------- Perguntas ----------
+function render() {
+  const p = PERGUNTAS[atual];
+  const ultima = atual === PERGUNTAS.length - 1;
+  bar.style.width = `${((atual + 1) / PERGUNTAS.length) * 100}%`;
+  count.textContent = `PERGUNTA ${atual + 1} DE ${PERGUNTAS.length}`;
+  q.textContent = p.titulo;
+  opts.innerHTML = '';
+  p.opcoes.forEach((texto, i) => {
+    const label = document.createElement('label');
+    label.className = 'opt';
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'r';
+    input.value = texto;
+    input.checked = respostas[atual] === texto;
+    input.addEventListener('change', () => { respostas[atual] = texto; next.disabled = false; });
+    label.append(input, document.createTextNode(texto));
+    opts.append(label);
+  });
+  back.hidden = atual === 0;
+  next.textContent = ultima ? 'Enviar' : 'Próxima';
+  next.disabled = !respostas[atual];
+  msg.hidden = true;
+}
+
+back.addEventListener('click', () => { if (atual > 0 && !enviando) { atual--; render(); } });
+
+next.addEventListener('click', async () => {
+  if (!respostas[atual] || enviando) return;
+  if (atual < PERGUNTAS.length - 1) { atual++; render(); window.scrollTo({ top: $('pesquisa').offsetTop - 24, behavior: 'smooth' }); return; }
+
+  // Última pergunta: grava na "Base pesquisa" e leva para o grupo
+  enviando = true;
+  next.disabled = true;
+  back.disabled = true;
+  next.textContent = 'Enviando…';
+
+  const envio = fetch(PLANILHA_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      tipo: 'pesquisa',
+      email: lead.email,
+      telefone: lead.telefone,
+      perguntas: PERGUNTAS.map((p) => p.titulo),
+      respostas,
+    }),
+  }).catch(() => {});
+
+  // Espera gravar (no máximo 10s) e o link do grupo carregar
+  await Promise.race([envio, new Promise((ok) => setTimeout(ok, 10000))]);
+  await carregarLink;
+
+  if (linkGrupo) {
+    location.href = linkGrupo;
+  } else {
+    msg.textContent = 'Respostas enviadas! Toque no botão abaixo para entrar no grupo do WhatsApp.';
+    msg.hidden = false;
+    next.textContent = 'Enviado ✓';
+  }
+});
+
+render();
 </script>
 </body>
 </html>
