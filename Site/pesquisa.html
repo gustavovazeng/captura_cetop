@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pesquisa · As 4 conquistas</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#FCF6F0;color:#4A2E26;font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+  main{max-width:520px;margin:0 auto;padding:64px 22px;text-align:center}
+  h1{font-family:'DM Serif Display',serif;font-weight:400;font-size:clamp(32px,8vw,42px);line-height:1.08;margin:0 0 16px}
+  p{font-size:18px;line-height:1.5}
+  code{font-size:13px;color:#7A5A50;word-break:break-all}
+</style>
+</head>
+<body>
+<main>
+  <h1>Página de pesquisa (provisória)</h1>
+  <p>O cadastro funcionou. Esta página será substituída pela pesquisa.</p>
+  <p><code id="debug"></code></p>
+</main>
+<script>
+  // A pesquisa vai receber pela URL: email, telefone (+5511987654321) e as UTMs.
+  // As respostas serão gravadas na aba "Base pesquisa" junto com e-mail e telefone.
+  const p = new URLSearchParams(location.search);
+  document.getElementById('debug').textContent = [p.get('email'), p.get('telefone')].filter(Boolean).join(' · ');
+</script>
+</body>
+</html>
