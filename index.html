@@ -265,7 +265,6 @@ function formatPhone() {
   phone.value = c.mask(d.slice(0, c.max));
 }
 function applyCountry() {
-  phone.placeholder = COUNTRIES[ddi.value].placeholder;
   formatPhone();
 }
 applyCountry();
