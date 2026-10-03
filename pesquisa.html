@@ -112,8 +112,7 @@ const PERGUNTAS = [
 // ================== PÁGINA ==================
 const params = new URLSearchParams(location.search);
 const lead = { email: params.get('email') || '', telefone: params.get('telefone') || '' };
-const respostas = new Array(PERGUNTAS.length).fill(null);
-let atual = 0, enviando = false;
+const respostas = new Array(PERGUNTAS.length).fill(null);let atual = 0, enviando = false;
 
 const $ = (id) => document.getElementById(id);
 const bar = $('bar'), count = $('count'), q = $('q'), opts = $('opts'), back = $('back'), next = $('next'), msg = $('msg'), grupo = $('grupo');
@@ -136,6 +135,23 @@ grupo.addEventListener('click', async (e) => {
   await carregarLink;
   if (linkGrupo) location.href = linkGrupo;
 });
+
+// ---------- Salvar na planilha ----------
+// Salva a cada "Próxima" (quem parar no meio fica registrado com o que respondeu até ali).
+// Se voltar e editar, o próximo "Próxima" atualiza a linha com a resposta nova.
+function corpo(final) {
+  return JSON.stringify({
+    tipo: 'pesquisa',
+    final,
+    email: lead.email,
+    telefone: lead.telefone,
+    perguntas: PERGUNTAS.map((p) => p.titulo),
+    respostas,
+  });
+}
+function salvarParcial() {
+  fetch(PLANILHA_URL, { method: 'POST', body: corpo(false), keepalive: true }).catch(() => {});
+}
 
 // ---------- Perguntas ----------
 function render() {
@@ -167,7 +183,7 @@ back.addEventListener('click', () => { if (atual > 0 && !enviando) { atual--; re
 
 next.addEventListener('click', async () => {
   if (!respostas[atual] || enviando) return;
-  if (atual < PERGUNTAS.length - 1) { atual++; render(); window.scrollTo({ top: $('pesquisa').offsetTop - 24, behavior: 'smooth' }); return; }
+  if (atual < PERGUNTAS.length - 1) { salvarParcial(); atual++; render(); window.scrollTo({ top: $('pesquisa').offsetTop - 24, behavior: 'smooth' }); return; }
 
   // Última pergunta: grava na "Base pesquisa" e leva para o grupo
   enviando = true;
@@ -175,16 +191,7 @@ next.addEventListener('click', async () => {
   back.disabled = true;
   next.textContent = 'Enviando…';
 
-  const envio = fetch(PLANILHA_URL, {
-    method: 'POST',
-    body: JSON.stringify({
-      tipo: 'pesquisa',
-      email: lead.email,
-      telefone: lead.telefone,
-      perguntas: PERGUNTAS.map((p) => p.titulo),
-      respostas,
-    }),
-  }).catch(() => {});
+  const envio = fetch(PLANILHA_URL, { method: 'POST', body: corpo(true) }).catch(() => {});
 
   // Espera gravar (no máximo 10s) e o link do grupo carregar
   await Promise.race([envio, new Promise((ok) => setTimeout(ok, 10000))]);

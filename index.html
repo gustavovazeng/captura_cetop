@@ -253,6 +253,16 @@ function readUtms() {
 }
 const utms = readUtms();
 
+// ---------- Visita (aba "Visitas" da planilha: total por dia) ----------
+// Conta uma vez por visita: recarregar a página não soma de novo.
+(function contarVisita() {
+  try {
+    if (sessionStorage.getItem('visita_contada')) return;
+    sessionStorage.setItem('visita_contada', '1');
+  } catch {}
+  fetch(PLANILHA_URL, { method: 'POST', keepalive: true, body: JSON.stringify({ tipo: 'visita' }) }).catch(() => {});
+})();
+
 // ---------- Formulário ----------
 const $ = (id) => document.getElementById(id);
 const form = $('inscricao'), email = $('email'), ddi = $('ddi'), phone = $('phone'), msg = $('msg'), btn = $('submit');
