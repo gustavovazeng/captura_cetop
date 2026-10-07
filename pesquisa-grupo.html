@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Queremos te ouvir · As 4 conquistas</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/cetop-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#FCF6F0;color:#4A2E26;font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{position:relative;overflow:hidden;min-height:100vh}
+  .blob{position:absolute;left:50%;top:-520px;transform:translateX(-50%);width:820px;height:820px;border-radius:50%;background:#FBE3D3}
+  main{position:relative;max-width:560px;margin:0 auto;padding:40px 22px 56px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px}
+
+  /* Logo "As 4 conquistas" (empilhado) */
+  .logo{display:inline-flex;flex-direction:column;align-items:center;gap:18px;zoom:.6}
+  .logo-steps{display:flex;align-items:flex-end;gap:6px;height:104px}
+  .logo-steps>div{width:24px;border-radius:12px 12px 4px 4px}
+  .logo-top{display:flex;flex-direction:column;align-items:center;gap:6px;width:auto!important;border-radius:0!important}
+  .logo-dot{width:20px;height:20px;border-radius:50%;background:#4A2E26}
+  .logo-title{font-family:'DM Serif Display',serif;font-size:64px;line-height:.95;white-space:nowrap}
+  .logo-sub{font-size:17px;font-weight:700;letter-spacing:.34em;text-transform:uppercase;white-space:nowrap;padding-left:4px;margin-top:8px}
+
+  h1{margin:6px 0 0;font-family:'DM Serif Display',serif;font-weight:400;font-size:clamp(32px,8.6vw,42px);line-height:1.06;text-wrap:balance}
+  h1 em{color:#C8703A}
+  .lead{margin:0;font-size:18px;line-height:1.5;text-wrap:pretty}
+
+  /* Cartão da pesquisa */
+  .card{width:100%;box-sizing:border-box;background:#FFF;border-radius:28px;padding:24px 20px;box-shadow:0 20px 50px rgba(74,46,38,.08);text-align:left;margin-top:6px}
+  .progress{height:8px;border-radius:999px;background:#F3E3D8;overflow:hidden}
+  .progress>div{height:100%;width:0;background:#D9783E;border-radius:999px;transition:width .3s}
+  .count{font-size:13px;font-weight:700;letter-spacing:.08em;color:#9C8178;margin:16px 0 6px}
+  .q{margin:0 0 16px;font-family:'DM Serif Display',serif;font-weight:400;font-size:26px;line-height:1.15}
+  .field{font:inherit;font-size:18px;color:#4A2E26;background:#FFF;border-radius:16px;padding:16px 18px;outline:none;min-height:60px;box-sizing:border-box;border:2px solid #F3E3D8;width:100%;transition:border-color .15s}
+  .field:focus{border-color:#D9B49E}
+  .field::placeholder{color:#9C8178}
+  textarea.field{min-height:150px;resize:none;line-height:1.5;overflow:hidden}
+  .nav{display:flex;gap:10px;margin-top:20px}
+  .btn{font:inherit;font-size:18px;font-weight:700;border:none;border-radius:999px;padding:16px 20px;min-height:56px;cursor:pointer;flex:1}
+  .btn-main{background:#4A2E26;color:#FCF6F0}
+  .btn-main:hover{background:#6A4438}
+  .btn-main:disabled{opacity:.35;cursor:not-allowed}
+  .btn-back{background:transparent;color:#4A2E26;border:2px solid #E8D5C8;flex:0 0 auto;padding:16px 22px}
+  .btn-back[hidden]{display:none}
+  [hidden]{display:none!important}
+
+  .thanks{text-align:center;padding:12px 4px}
+  .thanks h2{margin:0 0 10px;font-family:'DM Serif Display',serif;font-weight:400;font-size:30px;line-height:1.1}
+  .thanks p{margin:0;font-size:18px;line-height:1.5}
+  footer{max-width:960px;margin:0 auto;padding:24px 22px;display:flex;justify-content:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="blob"></div>
+<main>
+  <div class="logo" role="img" aria-label="As 4 conquistas do primeiro ano">
+    <div class="logo-steps" aria-hidden="true">
+      <div style="height:24px;background:#F7C6A3"></div>
+      <div style="height:44px;background:#F2B08A"></div>
+      <div style="height:64px;background:#EE9A62"></div>
+      <div class="logo-top"><div class="logo-dot"></div><div style="width:24px;height:84px;border-radius:12px 12px 4px 4px;background:#D9783E"></div></div>
+    </div>
+    <div><div class="logo-title">As <span style="color:#D9783E">4</span> conquistas</div><div class="logo-sub">do primeiro ano</div></div>
+  </div>
+
+  <h1>A Tia Jana quer <em>te ouvir</em></h1>
+  <p class="lead">Suas respostas ajudam a preparar a aula pensando no seu bebê. Escreva à vontade, do seu jeito.</p>
+
+  <form class="card" id="pesquisa" onsubmit="event.preventDefault()" novalidate>
+    <div class="progress" aria-hidden="true"><div id="bar"></div></div>
+    <div class="count" id="count"></div>
+    <h2 class="q" id="q"></h2>
+
+    <!-- Perguntas abertas -->
+    <textarea id="resposta" class="field" placeholder="Escreva sua resposta aqui…" aria-labelledby="q"></textarea>
+
+    <div class="nav" id="nav">
+      <button type="button" class="btn btn-back" id="back" hidden>Voltar</button>
+      <button type="button" class="btn btn-main" id="next" disabled>Próxima</button>
+    </div>
+
+    <div class="thanks" id="thanks" hidden>
+      <h2>Obrigada por responder!</h2>
+      <p>Suas respostas já chegaram para a Tia Jana. Te vejo na aula!</p>
+    </div>
+  </form>
+</main>
+</div>
+<footer><img src="assets/cetop-logo.png" alt="CETOP" style="height:36px;mix-blend-mode:multiply"></footer>
+
+<script>
+// ================== CONFIGURAÇÃO ==================
+// Link do App da Web da planilha (o mesmo das outras páginas)
+const PLANILHA_URL = 'https://script.google.com/macros/s/AKfycbzc6kXVM5-oeJuf3zQfr9bVeNQmag3ntmqijE9UyV6mUBziKth-Rn2Kb9JOUpoaauPZ/exec';
+
+// Perguntas abertas, na ordem (o título vira o cabeçalho na aba "Base pesquisa descritiva")
+const PERGUNTAS = [
+  'Qual sua maior dificuldade em relação ao desenvolvimento do seu bebê?',
+  'O que você já tentou para desenvolver o seu bebê?',
+  'O que o pediatra ou a família costumam te dizer sobre desenvolvimento?',
+  'O que hoje te impede de estimular o seu bebê como gostaria?',
+  'O que te fez se cadastrar nesse evento?',
+  'Se você sair deste evento com UMA coisa resolvida, qual seria?',
+];
+
+// ================== PÁGINA ==================
+const $ = (id) => document.getElementById(id);
+const bar = $('bar'), count = $('count'), q = $('q'), resposta = $('resposta'), back = $('back'), next = $('next'),
+  nav = $('nav'), thanks = $('thanks');
+
+const respostas = new Array(PERGUNTAS.length).fill('');
+// Código aleatório desta resposta: só serve para atualizar a mesma linha a cada "Próxima"
+const ID = Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+let atual = 0;
+let enviando = false;
+
+// ---------- Caixa de texto que cresce conforme a pessoa escreve ----------
+function ajustarAltura() { resposta.style.height = 'auto'; resposta.style.height = resposta.scrollHeight + 4 + 'px'; }
+resposta.addEventListener('input', () => {
+  respostas[atual] = resposta.value;
+  next.disabled = !resposta.value.trim();
+  ajustarAltura();
+});
+
+// ---------- Salvar na planilha ----------
+// Salva a cada "Próxima" (quem parar no meio fica registrado com o que escreveu até ali).
+function corpo(final) {
+  return JSON.stringify({
+    tipo: 'descritiva',
+    final,
+    id: ID,
+    perguntas: PERGUNTAS,
+    respostas: respostas.map((r) => r.trim()),
+  });
+}
+function salvarParcial() {
+  fetch(PLANILHA_URL, { method: 'POST', body: corpo(false), keepalive: true }).catch(() => {});
+}
+
+// ---------- Perguntas ----------
+function render() {
+  const total = PERGUNTAS.length;
+  bar.style.width = `${((atual + 1) / total) * 100}%`;
+  count.textContent = `PERGUNTA ${atual + 1} DE ${total}`;
+  q.textContent = PERGUNTAS[atual];
+  resposta.value = respostas[atual];
+  ajustarAltura();
+  back.hidden = atual === 0;
+  next.textContent = atual === total - 1 ? 'Enviar' : 'Próxima';
+  next.disabled = !resposta.value.trim();
+}
+
+back.addEventListener('click', () => { if (atual > 0 && !enviando) { atual--; render(); } });
+
+next.addEventListener('click', async () => {
+  if (enviando || !respostas[atual].trim()) return;
+
+  if (atual < PERGUNTAS.length - 1) {
+    salvarParcial();
+    atual++;
+    render();
+    window.scrollTo({ top: $('pesquisa').offsetTop - 24, behavior: 'smooth' });
+    resposta.focus({ preventScroll: true });
+    return;
+  }
+
+  // Última pergunta: envia tudo e agradece
+  enviando = true;
+  next.disabled = true;
+  back.disabled = true;
+  next.textContent = 'Enviando…';
+  await Promise.race([
+    fetch(PLANILHA_URL, { method: 'POST', body: corpo(true) }).catch(() => {}),
+    new Promise((ok) => setTimeout(ok, 10000)),
+  ]);
+  [bar.parentElement, count, q, resposta, nav].forEach((el) => { el.hidden = true; });
+  thanks.hidden = false;
+});
+
+render();
+</script>
+</body>
+</html>
